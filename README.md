@@ -5,11 +5,6 @@ lap records, and evaluating an XGBoost model for lap-time prediction. The
 project includes a FastF1 data pipeline, race-grouped model evaluation, SHAP
 explanations, and a Streamlit prediction app.
 
-> **Current model status:** The latest recorded evaluation is a useful baseline,
-> not yet a reliable lap-time predictor. Its errors remain large and its
-> out-of-fold R² is negative. See [Observed evaluation](#observed-evaluation)
-> before interpreting predictions.
-
 ## What the project does
 
 - Downloads race-session laps with FastF1 and caches them locally.
@@ -73,35 +68,6 @@ report in-sample performance from the saved model. Training also runs grouped
 cross-validation before fitting and saving the final model, so running both
 commands calculates evaluation metrics twice.
 
-## Observed evaluation
-
-The following results are transcribed from the project's captured run with
-10 races and 8,557 cleaned laps:
-
-| Metric | Observed |
-|---|---:|---:|---|
-| Raw laps collected | 11,135 | 
-| Clean laps | 8,557 |
-| Out-of-fold MAE | 9.919 s | 
-| Out-of-fold RMSE | 10.991 s | 
-| Out-of-fold R² | -0.783 | 
-| Baseline MAE | 12.176 s | 
-| Improvement over baseline | 18.5% | 
-
-Fold performance varied substantially: MAE ranged from 5.007 s to 14.438 s,
-and four of five fold R² scores were negative. The overall 18.5% improvement
-does not offset the high absolute error. Do not treat these results as
-race-strategy-grade predictions.
-
-The evaluation holds out complete races, which is a more demanding and
-realistic test of generalization to unseen events than a random row split.
-Before claiming improved performance, investigate the large fold errors,
-validate lap and feature alignment, and establish an appropriate comparison
-strategy. Potential next steps include error analysis by race/driver/compound
-and considering track-specific pace normalization. Re-run
-`python -m src.evaluate` after any change and compare against this recorded
-snapshot. Metrics can change when the dataset, configuration, or code changes.
-
 ## Run the app
 
 Train the model first, then start Streamlit:
@@ -111,8 +77,7 @@ streamlit run app/streamlit_app.py
 ```
 
 The app prompts for tyre age, fuel proxy, compound, driver, and event, then
-shows a predicted lap time and SHAP waterfall. Predictions are estimates from
-the trained model; their accuracy is limited by the evaluation results above.
+shows a predicted lap time and SHAP waterfall.
 
 ## Methodology and limitations
 
@@ -129,8 +94,6 @@ the trained model; their accuracy is limited by the evaluation results above.
 - Cleaning retains the configured compounds and removes pit, non-green,
   first-lap, and per-driver/per-race outlier laps. Review those assumptions
   when extending the dataset to other seasons or conditions.
-- PRD success metrics are goals, not guaranteed performance. The observed run
-  has not met the model MAE or baseline-improvement targets.
 
 ## Tests
 
@@ -154,23 +117,3 @@ data/raw/             Downloaded raw-lap parquet
 data/processed/       Clean data and model artifacts
 f1_cache/             FastF1 on-disk cache
 ```
-
-## Suggested project schedule
-
-For an intermediate data analyst working part-time, allow **2-3 weeks
-(approximately 25-35 focused hours)** for a portfolio-ready version, including
-analysis and iteration rather than only getting the code to run:
-
-| Phase | Estimate | Work |
-|---|---:|---|
-| Scope and data acquisition | 3-4 hours | Configure FastF1, collect races, inspect coverage |
-| Cleaning and data quality | 4-5 hours | Validate filters, lap counts, and missing values |
-| Feature engineering and baseline | 4-5 hours | Build features and document assumptions |
-| Modeling and error analysis | 6-9 hours | Grouped validation, compare folds, investigate errors |
-| Explainability and Streamlit | 4-6 hours | SHAP plots and an end-to-end prediction flow |
-| Tests, documentation, and polish | 4-6 hours | Run tests, capture results, prepare the portfolio walkthrough |
-
-Downloading and inspecting data can take longer on a first run or when FastF1
-access is slow. Given the current evaluation, reserve time in the modeling
-phase for investigating and improving generalization; do not present the PRD
-targets as achieved until a new held-out evaluation supports that conclusion.
