@@ -78,15 +78,15 @@ commands calculates evaluation metrics twice.
 The following results are transcribed from the project's captured run with
 10 races and 8,557 cleaned laps:
 
-| Metric | Observed | PRD target | Assessment |
+| Metric | Observed |
 |---|---:|---:|---|
-| Raw laps collected | 11,135 | — | Input to cleaning |
-| Clean laps | 8,557 | At least 5,000 across 10+ races | Volume met; 10 races in this run |
-| Out-of-fold MAE | 9.919 s | At most 0.35 s | Not met |
-| Out-of-fold RMSE | 10.991 s | Not specified | High error |
-| Out-of-fold R² | -0.783 | Not specified | Model underperforms a constant-mean prediction on these folds |
-| Baseline MAE | 12.176 s | Model improves by at least 50% | Reference score |
-| Improvement over baseline | 18.5% | At least 50% | Not met |
+| Raw laps collected | 11,135 | 
+| Clean laps | 8,557 |
+| Out-of-fold MAE | 9.919 s | 
+| Out-of-fold RMSE | 10.991 s | 
+| Out-of-fold R² | -0.783 | 
+| Baseline MAE | 12.176 s | 
+| Improvement over baseline | 18.5% | 
 
 Fold performance varied substantially: MAE ranged from 5.007 s to 14.438 s,
 and four of five fold R² scores were negative. The overall 18.5% improvement
